@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  memory-allocer:
+    container_name: memory-allocer
+    build: .
+    ports:
+      - 8080:8080
+  prometheus:
+    container_name: prometheus_rw
+    image: prom/prometheus:v2.53.1
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus-source.yml:/etc/prometheus/prometheus-source.yml
+    command:
+      - "--web.enable-remote-write-receiver"
+      - "--config.file=/etc/prometheus/prometheus-source.yml"
+      - '--log.level=debug'
+    restart: unless-stopped
